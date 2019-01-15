@@ -39,7 +39,6 @@ func memUsage() (mem Memory) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -52,6 +51,11 @@ func memUsage() (mem Memory) {
 	}
 
 	mem.Used = mem.Total - mem.Free
+
+	err = file.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	return
 }

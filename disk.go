@@ -35,12 +35,3 @@ func DiskUsage(path string) (disk DiskStatus) {
 	disk.Used = disk.Total - disk.Free
 	return
 }
-
-func addDisk(name string, status DiskStatus) string {
-	format := `%s:
-Total: %.2f GB
-Used: %.2f GB
-Free: %.2f GB`
-
-	return fmt.Sprintf(format, name, inGig(status.Total), inGig(status.Used), inGig(status.Free))
-}
