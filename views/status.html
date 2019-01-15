@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns:width="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    {{/*<meta http-equiv="refresh" content="30">*/}}
+    <link rel="stylesheet" href="/static/css/style.css"/>
+    <title>Pi Stats</title>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        // Load google charts
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        // Draw the chart and set the chart values
+        function drawChart() {
+            let data = google.visualization.arrayToDataTable([
+                ['Task', 'Hours per Day'],
+                ['Used', {{.ExternalRaw.Used}}],
+                ['Avail', {{.ExternalRaw.Free}}]
+            ]);
+
+            // Reference: https://developers.google.com/chart/interactive/docs/gallery/piechart#data-format
+            let options = {
+                title:'External',
+                titleTextStyle:{
+                    fontSize: 24,
+                  color: '#ff0000'
+                },
+                backgroundColor:'black',
+                legend:{
+                    textStyle:{
+                        color:'white',
+                        fontSize: 12
+                    }
+                },
+            };
+
+            // Display the chart inside the <div> element with id="pie-chart"
+            let chart = new google.visualization.PieChart(document.getElementById('pie-chart'));
+            chart.draw(data, options);
+        }
+    </script>
+
+</head>
+<body>
+    <div class="row">
+        <div id="text" class="column left">
+            <h1>Pi Stats</h1>
+            <p>
+                External: <br/>
+                Total: {{.External.Total}} <br/>
+                Free: {{.External.Free}} <br/>
+                Used: {{.External.Used}} <br/>
+            </p>
+
+            <p>
+                Internal: <br/>
+                Total: {{.Internal.Total}} <br/>
+                Free: {{.Internal.Free}} <br/>
+                Used: {{.Internal.Used}} <br/>
+            </p>
+
+            <p>
+                Memory: <br/>
+                Total: {{.MemStats.Total}} <br/>
+                Free: {{.MemStats.Free}} <br/>
+                Used: {{.MemStats.Used}} <br/>
+            </p>
+        </div>
+        <div id="pie-chart" class="column right"></div>
+    </div>
+
+</body>
+</html>

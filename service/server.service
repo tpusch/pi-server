@@ -1,0 +1,10 @@
+[Unit]
+Description=Pi Server
+
+[Service]
+Type=simple
+WorkingDirectory=/home/tyler/
+ExecStart=/home/tyler/piServer_linux
+
+[Install]
+WantedBy=multi-user.target

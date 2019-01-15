@@ -10,9 +10,22 @@ import (
 )
 
 type Memory struct {
-	Total uint64 `json:"total"`
-	Free  uint64 `json:"free"`
-	Used  uint64 `json:"used"`
+	Total float64 `json:"total"`
+	Free  float64 `json:"free"`
+	Used  float64 `json:"used"`
+}
+
+type MemoryString struct {
+	Total string
+	Free  string
+	Used  string
+}
+
+func getMemoryString(memory Memory) (memString MemoryString) {
+	memString.Total = fmt.Sprintf("%.2f MB", memory.Total)
+	memString.Used = fmt.Sprintf("%.2f MB", memory.Used)
+	memString.Free = fmt.Sprintf("%.2f MB", memory.Free)
+	return
 }
 
 func getValue(line string) uint64 {
@@ -32,23 +45,13 @@ func memUsage() (mem Memory) {
 	for scanner.Scan() {
 		text := scanner.Text()
 		if strings.Contains(text, "MemTotal") {
-			mem.Total = getValue(text)
+			mem.Total = kbToMb(getValue(text))
 		} else if strings.Contains(text, "MemFree") {
-			mem.Free = getValue(text)
+			mem.Free = kbToMb(getValue(text))
 		}
 	}
 
 	mem.Used = mem.Total - mem.Free
 
 	return
-}
-
-func addMem(memory Memory) string {
-	format := `MemStatus:
-Total: %.2f MB
-Used: %.2f MB
-Free: %.2f MB
-
-`
-	return fmt.Sprintf(format, kbToMb(memory.Total), kbToMb(memory.Used), kbToMb(memory.Free))
 }

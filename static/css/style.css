@@ -1,0 +1,26 @@
+html {
+    overflow:hidden;
+}
+
+body {
+    background-color: black;
+    color: #ff0000;
+    font-size: large;
+}
+
+h1 {
+    color: orange;
+}
+
+.column {
+    float: left;
+}
+
+.left {
+    width: 25%;
+}
+
+.right {
+    width: 75%;
+    height: 480px;
+}

@@ -1,31 +1,45 @@
 package main
 
 import (
-	"fmt"
+	"html/template"
 	"log"
+	"math"
 	"net/http"
 )
 
 func inGig(size uint64) float64 {
-	return float64(size) / float64(GB)
+	return math.Round(float64(size) / float64(GB))
 }
 
 func kbToMb(size uint64) float64 {
 	return float64(size) / float64(1024)
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	message := `<head>
-<meta http-equiv="refresh" content="5">
-</head>
-<h1>PI Stats</h1>
-<pre><font size="5">`
-	message += addDisk("External", DiskUsage("/mnt/external"))
-	message += addDisk("Internal", DiskUsage("/"))
-	message += addMem(memUsage())
-	message += "</font></pre>"
+type StatusPageVariables struct {
+	External    DiskString
+	ExternalRaw DiskStatus
+	Internal    DiskString
+	MemStats    MemoryString
+}
 
-	_, _ = fmt.Fprint(w, message, r.URL.Path[1:])
+func handler(w http.ResponseWriter, r *http.Request) {
+
+	pageVars := StatusPageVariables{
+		getDiskString(DiskUsage("/mnt/external")),
+		DiskUsage("/mnt/external"),
+		getDiskString(DiskUsage("/")),
+		getMemoryString(memUsage()),
+	}
+
+	t, err := template.ParseFiles("status.html")
+	if err != nil {
+		log.Println("template parsing error: ", err)
+	}
+
+	err = t.Execute(w, pageVars)
+	if err != nil {
+		log.Println("template execution error: ", err)
+	}
 }
 
 const (
@@ -37,5 +51,7 @@ const (
 
 func main() {
 	http.HandleFunc("/", handler)
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	log.Fatal(http.ListenAndServe(":80", nil))
+
 }
