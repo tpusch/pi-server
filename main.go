@@ -22,7 +22,7 @@ type StatusPageVariables struct {
 	MemStats    MemoryString
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func statusPageHandler(w http.ResponseWriter, r *http.Request) {
 
 	pageVars := StatusPageVariables{
 		getDiskString(DiskUsage("/mnt/external")),
@@ -50,7 +50,7 @@ const (
 )
 
 func main() {
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/", statusPageHandler)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	log.Fatal(http.ListenAndServe(":80", nil))
 

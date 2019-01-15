@@ -33,5 +33,6 @@ func DiskUsage(path string) (disk DiskStatus) {
 	disk.Total = fs.Blocks * uint64(fs.Bsize)
 	disk.Free = fs.Bfree * uint64(fs.Bsize)
 	disk.Used = disk.Total - disk.Free
+
 	return
 }
